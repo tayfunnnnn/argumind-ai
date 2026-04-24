@@ -16,6 +16,13 @@ app.use(express.static("public"));
 
 
 // ===========================
+// RATE LIMIT — Günlük IP bazlı istek sınırı (SQLite destekli)
+// ===========================
+
+const GUNLUK_LIMIT = 5;
+
+
+// ===========================
 // VERİTABANI KURULUMU
 // ===========================
 
@@ -52,6 +59,39 @@ db.exec(`
 `);
 
 try { db.exec(`ALTER TABLE tasks ADD COLUMN kategori TEXT`); } catch (_) {}
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS rate_limit (
+    ip         TEXT    PRIMARY KEY,
+    sayi       INTEGER NOT NULL DEFAULT 1,
+    sifirlanacak INTEGER NOT NULL
+  )
+`);
+
+function rateLimiter(req, res, next) {
+  const ip    = (req.ip || req.connection.remoteAddress).replace("::ffff:", "");
+  const simdi = Date.now();
+
+  const kayit = db.prepare("SELECT * FROM rate_limit WHERE ip = ?").get(ip);
+
+  if (!kayit || simdi > kayit.sifirlanacak) {
+    db.prepare("INSERT OR REPLACE INTO rate_limit (ip, sayi, sifirlanacak) VALUES (?, 1, ?)")
+      .run(ip, simdi + 24 * 60 * 60 * 1000);
+    console.log(`[RATE LIMIT] ${ip} → 1/${GUNLUK_LIMIT}`);
+    return next();
+  }
+
+  if (kayit.sayi >= GUNLUK_LIMIT) {
+    console.log(`[RATE LIMIT] ${ip} limiti aştı (${kayit.sayi}/${GUNLUK_LIMIT})`);
+    return res.status(429).json({
+      hata: `Günlük ${GUNLUK_LIMIT} istek limitine ulaştınız. 24 saat sonra tekrar deneyin.`
+    });
+  }
+
+  db.prepare("UPDATE rate_limit SET sayi = sayi + 1 WHERE ip = ?").run(ip);
+  console.log(`[RATE LIMIT] ${ip} → ${kayit.sayi + 1}/${GUNLUK_LIMIT}`);
+  next();
+}
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS evaluations (
@@ -245,7 +285,7 @@ app.patch("/api/tasks/:id/status", (req, res) => {
 // ENDPOINT: POST /api/task-agent
 // ===========================
 
-app.post("/api/task-agent", async (req, res) => {
+app.post("/api/task-agent", rateLimiter, async (req, res) => {
   const { fikir, boss } = req.body;
 
   if (!fikir || !boss) {
@@ -403,7 +443,7 @@ Teknik Analiz: ${teknik}`;
 // ANA ENDPOINT
 // ===========================
 
-app.post("/api/degerlendir", async (req, res) => {
+app.post("/api/degerlendir", rateLimiter, async (req, res) => {
   const { fikir, userId } = req.body;
 
   if (!fikir) {
@@ -476,7 +516,7 @@ app.get("/api/gecmis/:userId", (req, res) => {
 // mod: "gelistir" → geliştirilmiş fikir döner
 // ===========================
 
-app.post("/api/idea-coach", async (req, res) => {
+app.post("/api/idea-coach", rateLimiter, async (req, res) => {
   const { mod, fikir, cevaplar } = req.body;
 
   if (!mod || !fikir) {
