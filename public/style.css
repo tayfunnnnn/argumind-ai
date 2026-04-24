@@ -690,7 +690,13 @@ button { cursor: pointer; font-family: 'DM Sans', sans-serif; }
 
 @media (max-width: 560px) { .board-sutunlar { grid-template-columns: 1fr; } }
 
-.board-sutun { background: #f7f8fa; border-radius: 12px; overflow: hidden; min-height: 160px; }
+.board-sutun {
+  background: #f7f8fa;
+  border-radius: 12px;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+}
 
 .sutun-baslik {
   padding: 9px 13px;
@@ -704,7 +710,7 @@ button { cursor: pointer; font-family: 'DM Sans', sans-serif; }
 .sutun-devam     { background: #fff4e0; color: #e67700; }
 .sutun-tamam     { background: #ebfbee; color: #2f9e44; }
 
-.sutun-icerik { padding: 8px; display: flex; flex-direction: column; gap: 7px; min-height: 80px; }
+.sutun-icerik { padding: 8px; display: flex; flex-direction: column; gap: 7px; min-height: 80px; flex: 1; }
 
 .task-kart {
   background: #fff;
@@ -727,6 +733,10 @@ button { cursor: pointer; font-family: 'DM Sans', sans-serif; }
 }
 
 .task-kart * {
+  pointer-events: none;
+}
+
+.board-sutunlar.drag-aktif .task-kart {
   pointer-events: none;
 }
 

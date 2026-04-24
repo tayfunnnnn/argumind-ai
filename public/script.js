@@ -405,11 +405,15 @@ function taskKartiOlustur(task) {
   kart.ondragstart = function (e) {
     _suruklenenTaskId = task.id;
     e.dataTransfer.effectAllowed = "move";
-    setTimeout(function () { kart.classList.add("surukleniyor"); }, 0);
+    setTimeout(function () {
+      kart.classList.add("surukleniyor");
+      document.querySelector(".board-sutunlar").classList.add("drag-aktif");
+    }, 0);
   };
 
   kart.ondragend = function () {
     kart.classList.remove("surukleniyor");
+    document.querySelector(".board-sutunlar").classList.remove("drag-aktif");
     _suruklenenTaskId = null;
   };
 
@@ -418,31 +422,31 @@ function taskKartiOlustur(task) {
 
 
 function boardDragKurulum() {
-  ["YAPILACAK", "DEVAM_EDIYOR", "TAMAMLANDI"].forEach(function (durum) {
-    const sutun = document.getElementById("sutun-" + durum);
-    if (!sutun) return;
+  document.querySelectorAll(".board-sutun[data-durum]").forEach(function (kutu) {
+    var durum  = kutu.dataset.durum;
+    var icerik = document.getElementById("sutun-" + durum);
 
-    sutun.ondragover = function (e) {
+    kutu.ondragover = function (e) {
       e.preventDefault();
       e.dataTransfer.dropEffect = "move";
-      sutun.classList.add("uzerine-gelindi");
+      icerik.classList.add("uzerine-gelindi");
     };
 
-    sutun.ondragleave = function (e) {
-      if (!sutun.contains(e.relatedTarget)) {
-        sutun.classList.remove("uzerine-gelindi");
+    kutu.ondragleave = function (e) {
+      if (!kutu.contains(e.relatedTarget)) {
+        icerik.classList.remove("uzerine-gelindi");
       }
     };
 
-    sutun.ondrop = function (e) {
+    kutu.ondrop = function (e) {
       e.preventDefault();
-      sutun.classList.remove("uzerine-gelindi");
+      icerik.classList.remove("uzerine-gelindi");
 
       var taskId = _suruklenenTaskId;
       if (!taskId) return;
 
       var kart = document.querySelector('[data-task-id="' + taskId + '"]');
-      if (kart) sutun.appendChild(kart);
+      if (kart) icerik.appendChild(kart);
 
       fetch("/api/tasks/" + taskId + "/status", {
         method:  "PATCH",
