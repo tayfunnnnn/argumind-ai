@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fikir Değerlendirici</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ===================== -->
+<!-- GİRİŞ EKRANI          -->
+<!-- ===================== -->
+<div id="auth-ekrani" class="auth-sayfa">
+  <div class="auth-kutu">
+    <div class="auth-logo">💡 Fikir Değerlendirici</div>
+    <div class="sekme-grup">
+      <button class="sekme-btn aktif" onclick="sekmeGoster('login')">Giriş Yap</button>
+      <button class="sekme-btn" onclick="sekmeGoster('register')">Kayıt Ol</button>
+    </div>
+    <div id="login-form">
+      <div class="form-grup">
+        <label class="etiket">Email</label>
+        <input type="email" id="login-email" placeholder="ornek@email.com" />
+      </div>
+      <div class="form-grup">
+        <label class="etiket">Şifre</label>
+        <input type="password" id="login-sifre" placeholder="Şifreniz" />
+      </div>
+      <div id="login-hata" class="form-hata gizli"></div>
+      <button class="form-btn" onclick="girisYap()">Giriş Yap →</button>
+    </div>
+    <div id="register-form" class="gizli">
+      <div class="form-grup">
+        <label class="etiket">İsim</label>
+        <input type="text" id="register-isim" placeholder="Adınız" />
+      </div>
+      <div class="form-grup">
+        <label class="etiket">Email</label>
+        <input type="email" id="register-email" placeholder="ornek@email.com" />
+      </div>
+      <div class="form-grup">
+        <label class="etiket">Şifre</label>
+        <input type="password" id="register-sifre" placeholder="En az 6 karakter" />
+      </div>
+      <div id="register-hata" class="form-hata gizli"></div>
+      <div id="register-basari" class="form-basari gizli"></div>
+      <button class="form-btn" onclick="kayitOl()">Kayıt Ol →</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===================== -->
+<!-- ANA UYGULAMA          -->
+<!-- ===================== -->
+<div id="uygulama-ekrani" class="gizli">
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="navbar-logo">💡 Fikir Değerlendirici</div>
+    <div class="navbar-sag">
+      <span class="navbar-kullanici">👋 <span id="kullanici-adi"></span></span>
+      <button class="navbar-cikis" onclick="cikisYap()">Çıkış</button>
+    </div>
+  </nav>
+
+  <div class="sayfa">
+
+    <!-- 1. FİKRİN NEDİR -->
+    <div class="bolum">
+      <div class="bolum-etiket">FİKRİN NEDİR?</div>
+      <div class="bolum-altyazi">Fikrinin her açısını inceleyelim. Ne kadar detaylı yazarsan o kadar iyi analiz çıkar.</div>
+      <div class="kart hero-kart">
+        <textarea id="fikir-alani" placeholder="Örneğin: Freelancer'ların müşteri takibini ve faturalarını yöneten mobil uygulama..."></textarea>
+        <div id="bos-uyari" class="uyari gizli">⚠️ Lütfen bir fikir yaz.</div>
+        <div class="hero-butonlar">
+          <button class="btn-ikincil" onclick="fikirKocuBaslat()">💡 Sorularla Geliştir</button>
+          <button id="degerlendir-btn" class="btn-birincil" onclick="degerlendirFikir()">
+            <span id="btn-yazi">Değerlendir →</span>
+            <span id="btn-loading" class="gizli"><span class="spinner"></span> Analiz yapılıyor...</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FİKİR KOÇU PANELİ -->
+    <div id="koc-alani" class="gizli">
+      <div class="bolum">
+        <div class="bolum-etiket">FİKİR KOÇU</div>
+        <div class="bolum-altyazi">Birkaç soruyu cevapla, AI fikrinin geliştirilmiş halini üretsin.</div>
+        <div class="kart">
+
+          <!-- AŞAMA 1: Sorular -->
+          <div id="koc-sorular-alani">
+            <div id="koc-sorular-liste" class="koc-sorular-liste"></div>
+            <div class="koc-alt">
+              <button class="btn-birincil" onclick="fikriGelistir()">
+                <span id="koc-gelistir-yazi">Fikri Geliştir →</span>
+                <span id="koc-gelistir-loading" class="gizli"><span class="spinner"></span> Üretiliyor...</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- AŞAMA 2: Sonuç -->
+          <div id="koc-sonuc-alani" class="gizli">
+            <div class="koc-sonuc-baslik" id="koc-baslik"></div>
+            <div class="koc-sonuc-satirlar">
+              <div class="koc-satir"><span class="koc-etiket">👥 Hedef Kitle</span><span id="koc-hedef"></span></div>
+              <div class="koc-satir"><span class="koc-etiket">🔥 Problem</span><span id="koc-problem"></span></div>
+              <div class="koc-satir"><span class="koc-etiket">💡 Çözüm</span><span id="koc-cozum"></span></div>
+              <div class="koc-satir"><span class="koc-etiket">⚙️ Temel Özellikler</span><ul id="koc-ozellikler" class="koc-liste"></ul></div>
+              <div class="koc-satir"><span class="koc-etiket">✨ Neden Değerli</span><span id="koc-deger"></span></div>
+            </div>
+            <div class="koc-alt">
+              <button class="btn-ikincil" onclick="kocuSifirla()">← Tekrar Dene</button>
+              <button class="btn-birincil" onclick="fikriAktarAna()">Ana Alana Aktar →</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- HATA KUTUSU -->
+    <div id="hata-kutusu" class="hata-kart gizli"></div>
+
+    <!-- SONUÇ ALANI -->
+    <div id="sonuclar" class="gizli">
+
+      <!-- 2. AI ANALİZİ -->
+      <div class="bolum">
+        <div class="bolum-etiket">AI ANALİZİ</div>
+        <div class="bolum-altyazi">3 farklı AI ajanı fikrinizi farklı açılardan değerlendirir.</div>
+        <div class="ajan-listesi">
+          <div class="ajan-kart ajan-mavi">
+            <div class="ajan-sol">
+              <div class="ajan-ikon-daire ajan-ikon-mavi">👤</div>
+              <div class="ajan-ad">Kullanıcı Değeri</div>
+            </div>
+            <p id="userValue-metni" class="ajan-metin"></p>
+          </div>
+          <div class="ajan-kart ajan-yesil">
+            <div class="ajan-sol">
+              <div class="ajan-ikon-daire ajan-ikon-yesil">📈</div>
+              <div class="ajan-ad">İş Stratejisi</div>
+            </div>
+            <p id="businessStrategy-metni" class="ajan-metin"></p>
+          </div>
+          <div class="ajan-kart ajan-mor">
+            <div class="ajan-sol">
+              <div class="ajan-ikon-daire ajan-ikon-mor">⚙️</div>
+              <div class="ajan-ad">Teknik Analiz</div>
+            </div>
+            <p id="technicalFeasibility-metni" class="ajan-metin"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. BOSS AI -->
+      <div class="bolum">
+        <div class="bolum-etiket">BOSS AI — NİHAİ DEĞERLENDİRME</div>
+        <div class="bolum-altyazi">Tüm analizleri değerlendirerek nihai kararı verir.</div>
+        <div class="boss-kart">
+          <div class="boss-icerik">
+            <div class="boss-skor-alani">
+              <div class="boss-skor-daire">
+                <span id="boss-skor" class="boss-skor-sayi">—</span>
+                <span class="boss-skor-on">/10</span>
+              </div>
+              <div id="boss-karar-etiketi" class="boss-karar-etiketi">—</div>
+            </div>
+            <div class="boss-orta">
+              <p id="boss-aciklama" class="boss-aciklama"></p>
+            </div>
+            <div class="boss-guclu-alani">
+              <div class="boss-guclu-baslik">En Güçlü Yönler</div>
+              <ul id="boss-guclu-liste" class="boss-guclu-liste"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI GÖREV ÜRET BUTONU -->
+      <button id="gorev-uret-btn" class="gorev-uret-btn gizli" onclick="gorevUret()">
+        ✨ AI Görev Üret
+      </button>
+
+      <!-- 4. GÖREV ÜRETİCİ -->
+      <div id="gorev-onay-alani" class="gizli">
+        <div class="bolum">
+          <div class="bolum-etiket">AI GÖREV ÜRETİCİ</div>
+          <div class="bolum-altyazi">Boss AI sonucuna göre ilk sprint görevleri önerildi.</div>
+          <div class="kart">
+            <div class="gorev-sprint-satiri">
+              🗂️ Sprint: <strong id="gorev-sprint-adi-metin"></strong>
+            </div>
+            <div id="gorev-liste"></div>
+            <div class="gorev-onay-alt">
+              <span id="gorev-secim-sayac" class="gorev-secim-sayac"></span>
+              <div class="gorev-onay-butonlar">
+                <button class="btn-ikincil" onclick="gorevOnayKapat()">Vazgeç</button>
+                <button class="btn-birincil" onclick="sprinteEkle()">
+                  <span id="gorev-ekle-yazi">Board'a Ekle →</span>
+                  <span id="gorev-ekle-loading" class="gizli"><span class="spinner"></span> Ekleniyor...</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /sonuclar -->
+
+    <!-- 5. SPRINT BOARD -->
+    <div id="board-alani" class="bolum">
+      <div class="bolum-etiket">SPRINT BOARD</div>
+      <div class="kart">
+        <div class="board-ust">
+          <select id="sprint-secici" onchange="sprintSec()">
+            <option value="">— Sprint seç —</option>
+          </select>
+          <button class="btn-kucuk" onclick="yeniSprintAc()">+ Sprint</button>
+          <button class="btn-kucuk btn-tehlike" onclick="sprintSil()">- Sprint</button>
+        </div>
+        <div id="yeni-sprint-formu" class="yeni-sprint-formu gizli">
+          <input type="text" id="sprint-adi" placeholder="Sprint adı..." />
+          <button class="btn-kucuk" onclick="sprintOlustur()">Oluştur</button>
+          <button class="btn-kucuk btn-gri" onclick="yeniSprintKapat()">İptal</button>
+        </div>
+        <div class="board-sutunlar">
+          <div class="board-sutun">
+            <div class="sutun-baslik sutun-yapilacak">YAPILACAK</div>
+            <div id="sutun-YAPILACAK" class="sutun-icerik"></div>
+          </div>
+          <div class="board-sutun">
+            <div class="sutun-baslik sutun-devam">DEVAM EDİYOR</div>
+            <div id="sutun-DEVAM_EDIYOR" class="sutun-icerik"></div>
+          </div>
+          <div class="board-sutun">
+            <div class="sutun-baslik sutun-tamam">TAMAMLANDI</div>
+            <div id="sutun-TAMAMLANDI" class="sutun-icerik"></div>
+          </div>
+        </div>
+        <div id="yeni-task-satiri" class="yeni-task-satiri gizli">
+          <input type="text" id="yeni-task-input" placeholder="+ Görev ekle..." onkeydown="if(event.key==='Enter') taskEkle()" />
+          <button class="btn-kucuk" onclick="taskEkle()">Ekle</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- GEÇMİŞ — ACCORDION -->
+    <div id="gecmis-alani" class="gizli accordion">
+      <div class="accordion-baslik" onclick="gecmisiToggle()">
+        <span>🕓 Son Değerlendirmeler</span>
+        <span id="gecmis-ok" class="accordion-ok">▼</span>
+      </div>
+      <div id="gecmis-icerik" class="accordion-icerik gizli">
+        <div id="gecmis-liste"></div>
+      </div>
+    </div>
+
+  </div><!-- /sayfa -->
+</div><!-- /uygulama-ekrani -->
+
+<script src="script.js"></script>
+</body>
+</html>
