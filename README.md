@@ -1,79 +1,82 @@
-# AI Idea Evaluator
+# 🤖 AI Idea Evaluator
 
 AI Idea Evaluator, kullanıcıların iş veya girişim fikirlerini yapay zekâ (AI) destekli analiz ederek değerlendirmesini sağlayan bir web uygulamasıdır.
 
-Uygulama; girilen fikri farklı AI rolleriyle analiz eder, sonuçları birleştirir ve uygulanabilir bir aksiyon planı (yapılacaklar listesi) üretir.
+Uygulama; girilen fikri farklı AI agent’lar (uzman roller) ile analiz eder, sonuçları birleştirir ve uygulanabilir bir aksiyon planı (task listesi) üretir.
 
 ---
 
-## 🚀 Uygulama Önizleme
+## 🚀 Canlı Demo
 
-![App Preview](screenshot.png)
+👉 https://ai-idea-evaluator-r1sq.onrender.com/
 
----
-
-## 📌 Temel Özellikler
-
-* 🔐 Kullanıcı kayıt ve giriş sistemi (authentication – kimlik doğrulama)
-* 🤖 AI destekli fikir analizi
-* 🧠 Çoklu AI rol yapısı:
-
-  * Kullanıcı Değeri Analizi (user value)
-  * İş / Strateji Analizi (business logic)
-  * Teknik Uygulanabilirlik Analizi (technical feasibility)
-* 👨‍💼 “Boss AI” ile nihai karar ve puanlama
-* ❓ Sorularla fikir geliştirme akışı
-* 📋 Otomatik görev (task) listesi üretimi
-* 🗂️ Sprint Board ile görev takibi
-* 🕘 Kullanıcıya özel analiz geçmişi
+📌 Not: İlk açılışta (Render free plan) 30–50 saniye gecikme olabilir.
 
 ---
 
-## 🛠️ Kullanılan Teknolojiler
+## 📸 Uygulama Önizleme
 
-* Frontend: HTML, CSS, JavaScript
-* Backend: Node.js, Express.js
-* Veritabanı: SQLite (hafif veritabanı)
-* Authentication: bcrypt (şifre hashleme – güvenli saklama)
-* AI Entegrasyonu: OpenAI API
+![App Preview](./screenshot.png)
 
 ---
 
-## 🎯 Proje Amacı
+## 🧩 Problem & Çözüm
 
-Bu proje, AI destekli ürün geliştirme (AI-powered product development) mantığını öğrenmek amacıyla geliştirilmiş bir MVP’dir (Minimum Viable Product – minimum çalışır ürün).
+**Problem:**  
+Bir iş fikrinin iyi olup olmadığını anlamak zor. Genelde:
+- farklı açılardan değerlendirilmez
+- objektif analiz yapılmaz
+- aksiyona dönüştürülmez
 
-Amaç:
-
-* Frontend + Backend entegrasyonu öğrenmek
-* AI API ile gerçek bir kullanım senaryosu kurmak
-* Kullanıcı yönetimi ve veri akışını anlamak
-* Basit bir ürün mantığını uçtan uca geliştirmek
+**Çözüm:**  
+AI Idea Evaluator:
+- fikri farklı perspektiflerden analiz eder  
+- tek bir karar üretir  
+- direkt uygulanabilir görev listesine çevirir  
 
 ---
 
-## ⚙️ Kurulum
+## ⚙️ Temel Özellikler
 
-Projeyi çalıştırmak için:
+- 🔐 Kullanıcı kayıt & giriş sistemi (authentication – kimlik doğrulama)
+- 🤖 AI destekli fikir analizi
+- 🧠 Çoklu AI agent mimarisi:
+  - Kullanıcı Değeri Analizi
+  - İş / Strateji Analizi
+  - Teknik Uygulanabilirlik Analizi
+- 👨‍💼 Boss AI ile nihai karar & puanlama
+- ❓ Soru bazlı fikir geliştirme akışı
+- 📋 Otomatik task listesi üretimi
+- 🗂️ Sprint Board (kanban) ile görev takibi
+- 🕘 Kullanıcıya özel analiz geçmişi
+
+---
+
+## 🧱 Kullanılan Teknolojiler
+
+- Frontend: HTML, CSS, JavaScript
+- Backend: Node.js (runtime), Express.js (framework)
+- Veritabanı: SQLite
+- Authentication: bcrypt (şifre güvenliği)
+- AI: OpenAI API
+
+---
+
+## 🔄 Uygulama Akışı
+
+1. Kullanıcı fikir girer  
+2. AI agent’lar farklı açılardan analiz eder  
+3. Boss AI sonuçları değerlendirir  
+4. Nihai karar & skor oluşturulur  
+5. Sistem task listesi üretir  
+6. Kullanıcı Sprint Board üzerinden ilerler  
+
+---
+
+## 🛠️ Kurulum (Local)
 
 ```bash
+git clone https://github.com/tayfunnnnn/ai-idea-evaluator.git
+cd ai-idea-evaluator
 npm install
 npm start
-```
-
-Tarayıcıda aç:
-
-```
-http://localhost:3000
-```
-
----
-
-## 📈 Geliştirme Fikirleri (Next Steps)
-
-* AI kararlarının daha detaylı açıklanması
-* Fikir skorlama sisteminin geliştirilmesi
-* Daha gelişmiş görev yönetimi (kanban / roadmap)
-* Farklı AI agent rolleri eklenmesi
-
----
