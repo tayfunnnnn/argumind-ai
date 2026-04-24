@@ -1,43 +1,79 @@
 # AI Idea Evaluator
 
-AI Idea Evaluator, kullanıcıların iş veya girişim fikirlerini yapay zekâ desteğiyle değerlendirmesini sağlayan bir web uygulamasıdır.
+AI Idea Evaluator, kullanıcıların iş veya girişim fikirlerini yapay zekâ (AI) destekli analiz ederek değerlendirmesini sağlayan bir web uygulamasıdır.
 
-Uygulama, girilen fikri farklı AI rolleriyle analiz eder, nihai bir karar üretir ve fikri hayata geçirmek için görev önerileri oluşturur.
+Uygulama; girilen fikri farklı AI rolleriyle analiz eder, sonuçları birleştirir ve uygulanabilir bir aksiyon planı (yapılacaklar listesi) üretir.
 
-## Özellikler
+---
 
-- Kullanıcı kayıt ve giriş sistemi
-- AI destekli fikir değerlendirme
-- 3 farklı AI analiz rolü:
-  - Kullanıcı Değeri Analizi
-  - İş / Strateji Analizi
-  - Teknik Uygulanabilirlik Analizi
-- Boss AI ile nihai karar ve puanlama
-- Sorularla fikir geliştirme akışı
-- AI görev listesi üretimi
-- Sprint Board ile görev takibi
-- Kullanıcıya özel değerlendirme geçmişi
+## 🚀 Uygulama Önizleme
 
-## Kullanılan Teknolojiler
+![App Preview](screenshot.png)
 
-- HTML
-- CSS
-- JavaScript
-- Node.js
-- Express.js
-- SQLite
-- bcrypt
-- OpenAI API
+---
 
-## Proje Amacı
+## 📌 Temel Özellikler
 
-Bu proje, AI destekli ürün geliştirme mantığını öğrenmek için geliştirilmiş bir MVP çalışmasıdır.
+* 🔐 Kullanıcı kayıt ve giriş sistemi (authentication – kimlik doğrulama)
+* 🤖 AI destekli fikir analizi
+* 🧠 Çoklu AI rol yapısı:
 
-Amaç; frontend, backend, kullanıcı yönetimi, veritabanı, AI API bağlantısı ve basit görev yönetimi akışlarını tek bir küçük üründe birleştirmektir.
+  * Kullanıcı Değeri Analizi (user value)
+  * İş / Strateji Analizi (business logic)
+  * Teknik Uygulanabilirlik Analizi (technical feasibility)
+* 👨‍💼 “Boss AI” ile nihai karar ve puanlama
+* ❓ Sorularla fikir geliştirme akışı
+* 📋 Otomatik görev (task) listesi üretimi
+* 🗂️ Sprint Board ile görev takibi
+* 🕘 Kullanıcıya özel analiz geçmişi
 
-## Kurulum
+---
 
-Projeyi bilgisayarına indirdikten sonra terminalde şu komutu çalıştır:
+## 🛠️ Kullanılan Teknolojiler
+
+* Frontend: HTML, CSS, JavaScript
+* Backend: Node.js, Express.js
+* Veritabanı: SQLite (hafif veritabanı)
+* Authentication: bcrypt (şifre hashleme – güvenli saklama)
+* AI Entegrasyonu: OpenAI API
+
+---
+
+## 🎯 Proje Amacı
+
+Bu proje, AI destekli ürün geliştirme (AI-powered product development) mantığını öğrenmek amacıyla geliştirilmiş bir MVP’dir (Minimum Viable Product – minimum çalışır ürün).
+
+Amaç:
+
+* Frontend + Backend entegrasyonu öğrenmek
+* AI API ile gerçek bir kullanım senaryosu kurmak
+* Kullanıcı yönetimi ve veri akışını anlamak
+* Basit bir ürün mantığını uçtan uca geliştirmek
+
+---
+
+## ⚙️ Kurulum
+
+Projeyi çalıştırmak için:
 
 ```bash
 npm install
+npm start
+```
+
+Tarayıcıda aç:
+
+```
+http://localhost:3000
+```
+
+---
+
+## 📈 Geliştirme Fikirleri (Next Steps)
+
+* AI kararlarının daha detaylı açıklanması
+* Fikir skorlama sisteminin geliştirilmesi
+* Daha gelişmiş görev yönetimi (kanban / roadmap)
+* Farklı AI agent rolleri eklenmesi
+
+---
