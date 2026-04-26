@@ -1,5 +1,7 @@
 # 🚀 ArguMind AI
 
+> **AI-powered multi-agent debate system for idea validation**
+
 ![App Screenshot](./screenshot.png)
 
 🔗 **Live Demo:**  
@@ -7,63 +9,73 @@
 
 ---
 
-## 🧠 Proje Amacı
+## 🧠 What is ArguMind AI?
 
-**ArguMind AI**, kullanıcıların iş ve ürün fikirlerini çoklu yapay zeka agent’larının tartışması (multi-agent debate) ile analiz eden bir karar destek sistemidir.
+**ArguMind AI** is an AI-powered decision support system that evaluates business and product ideas through structured **multi-agent debate**.
 
-Geleneksel AI sistemleri:
-- Tek cevap üretir  
-- Yüzeysel analiz yapar  
-- Fazla “uyumlu” davranır  
-
-**ArguMind AI yaklaşımı:**
-- Multi-agent system (çoklu AI agent)
-- Adversarial debate (çatışmalı tartışma)
-- Role-based reasoning (rol bazlı analiz)
-- Decision engine (net karar üretimi)
+Instead of generating a single answer, the system simulates a **real conflict between different expert perspectives** and produces a final decision.
 
 ---
 
-## ⚙️ Nasıl Çalışır?
+## 🎯 Why ArguMind AI?
 
-### 1. Kullanıcı fikrini girer
+Traditional AI systems:
+- Generate single, often shallow responses  
+- Tend to be overly agreeable  
+- Lack critical thinking depth  
 
-> “AI destekli restoran otomasyon sistemi”
+**ArguMind AI introduces:**
+- Multi-agent reasoning  
+- Adversarial debate (agents challenge each other)  
+- Role-based intelligence  
+- Clear, decision-oriented output  
 
 ---
 
-### 2. 3 farklı AI agent analiz yapar
+## ⚙️ How It Works
 
-| Agent | Odak |
+### 1. User submits an idea
+
+Example:
+> "AI-powered restaurant automation system"
+
+---
+
+### 2. AI agents analyze from different perspectives
+
+| Agent | Focus |
 |------|------|
-| 👤 Kullanıcı | Davranış, güven, adoption |
-| 📈 İş | Pazar, gelir, rekabet |
-| ⚙️ Teknik | Feasibility, maliyet, sistem |
+| 👤 User Agent | Behavior, trust, adoption |
+| 📈 Business Agent | Market, revenue, competition |
+| ⚙️ Technical Agent | Feasibility, cost, scalability |
 
 ---
 
-### 3. Debate başlar
+### 3. Debate phase (core feature)
 
-- Agent’lar birbirine itiraz eder  
-- Argümanlar çürütülür  
-- Yeni riskler ortaya çıkar  
-
----
-
-### 4. Boss AI karar verir
-
-- ✅ DEVAM ET  
-- 🔄 PIVOT  
-- ❌ VAZGEÇ  
+- Agents **directly challenge each other**
+- Arguments are **criticized and broken down**
+- New risks are introduced
+- No forced agreement
 
 ---
 
-### 5. Çıktı
+### 4. Final Decision (Boss AI)
+
+The system produces a strict decision:
+
+- ✅ **PROCEED**
+- 🔄 **PIVOT**
+- ❌ **REJECT**
+
+---
+
+### 5. Structured Output
 
 ```json
 {
   "score": 3.5,
-  "decision": "VAZGEÇ",
+  "decision": "REJECT",
   "summary": "...",
   "strongPoints": ["..."],
   "risks": ["..."],
