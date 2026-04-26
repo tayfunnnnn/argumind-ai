@@ -81,6 +81,10 @@
             <span id="btn-yazi">Değerlendir →</span>
             <span id="btn-loading" class="gizli"><span class="spinner"></span> Analiz yapılıyor...</span>
           </button>
+          <button id="debate-btn" class="btn-debate" onclick="debateBaslat()">
+            <span id="debate-btn-yazi">🎭 Agent Debate</span>
+            <span id="debate-btn-loading" class="gizli"><span class="spinner"></span> Tartışılıyor...</span>
+          </button>
         </div>
       </div>
     </div>
@@ -125,6 +129,55 @@
 
     <!-- HATA KUTUSU -->
     <div id="hata-kutusu" class="hata-kart gizli"></div>
+
+    <!-- AGENT DEBATE SONUÇLARI -->
+    <div id="debate-alani" class="gizli">
+
+      <!-- TURLAR (dinamik — 2 veya 3 tur JS tarafından oluşturulur) -->
+      <div id="debate-turlar"></div>
+
+      <!-- DEBATE BOSS AI -->
+      <div class="bolum">
+        <div class="bolum-etiket">BOSS AI — DEBATE KARARI</div>
+        <div class="bolum-altyazi">Tüm tartışmayı okuyarak nihai kararı veriyor.</div>
+        <div class="boss-kart">
+          <div class="debate-boss-grid">
+
+            <!-- SOL: Skor + Karar + Özet + Kritik Hata -->
+            <div class="debate-boss-sol">
+              <div class="boss-skor-alani">
+                <div class="boss-skor-daire">
+                  <span id="debate-boss-skor" class="boss-skor-sayi">—</span>
+                  <span class="boss-skor-on">/10</span>
+                </div>
+                <div id="debate-boss-karar" class="boss-karar-etiketi">—</div>
+              </div>
+              <p id="debate-boss-aciklama" class="boss-aciklama"></p>
+              <div id="debate-boss-hata-alani" class="debate-hata-alani gizli">
+                <div class="debate-hata-baslik">⚠️ En Kritik Hata</div>
+                <p id="debate-boss-hata" class="debate-hata-metin"></p>
+              </div>
+            </div>
+
+            <!-- SAĞ: Kazanan (üstte belirgin) + Güçlü Yönler + Riskler -->
+            <div class="debate-boss-sag">
+              <div id="debate-boss-kazanan-alani" class="debate-kazanan-alani gizli">
+                <div class="debate-kazanan-baslik">🏆 Tartışmayı Kazanan</div>
+                <span id="debate-boss-kazanan" class="debate-kazanan-etiket"></span>
+              </div>
+              <div class="boss-guclu-alani">
+                <div class="boss-guclu-baslik">Güçlü Yönler</div>
+                <ul id="debate-boss-guclu" class="boss-guclu-liste"></ul>
+                <div class="boss-guclu-baslik debate-risk-baslik">Riskler</div>
+                <ul id="debate-boss-riskler" class="boss-guclu-liste debate-riskler"></ul>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /debate-alani -->
 
     <!-- SONUÇ ALANI -->
     <div id="sonuclar" class="gizli">
@@ -213,6 +266,17 @@
 
     </div><!-- /sonuclar -->
 
+    <!-- GEÇMİŞ — ACCORDION -->
+    <div id="gecmis-alani" class="gizli accordion">
+      <div class="accordion-baslik" onclick="gecmisiToggle()">
+        <span>🕓 Son Değerlendirmeler</span>
+        <span id="gecmis-ok" class="accordion-ok">▼</span>
+      </div>
+      <div id="gecmis-icerik" class="accordion-icerik gizli">
+        <div id="gecmis-liste"></div>
+      </div>
+    </div>
+
     <!-- 5. SPRINT BOARD -->
     <div id="board-alani" class="bolum">
       <div class="bolum-etiket">SPRINT BOARD</div>
@@ -247,17 +311,6 @@
           <input type="text" id="yeni-task-input" placeholder="+ Görev ekle..." onkeydown="if(event.key==='Enter') taskEkle()" />
           <button class="btn-kucuk" onclick="taskEkle()">Ekle</button>
         </div>
-      </div>
-    </div>
-
-    <!-- GEÇMİŞ — ACCORDION -->
-    <div id="gecmis-alani" class="gizli accordion">
-      <div class="accordion-baslik" onclick="gecmisiToggle()">
-        <span>🕓 Son Değerlendirmeler</span>
-        <span id="gecmis-ok" class="accordion-ok">▼</span>
-      </div>
-      <div id="gecmis-icerik" class="accordion-icerik gizli">
-        <div id="gecmis-liste"></div>
       </div>
     </div>
 

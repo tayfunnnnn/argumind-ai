@@ -186,7 +186,9 @@ async function degerlendirFikir() {
   document.getElementById("sonuclar").classList.add("gizli");
 
   try {
-    const userId = JSON.parse(localStorage.getItem("kullanici")).id;
+    const kullaniciVerisi = JSON.parse(localStorage.getItem("kullanici"));
+    const userId = kullaniciVerisi ? kullaniciVerisi.id : null;
+    console.log("[DEĞERLENDİR] userId:", userId, "| type:", typeof userId, "| localStorage:", kullaniciVerisi);
 
     const yanit = await fetch("/api/degerlendir", {
       method: "POST",
@@ -214,6 +216,7 @@ async function degerlendirFikir() {
     sonuclar.classList.remove("gizli");
     sonuclar.scrollIntoView({ behavior: "smooth" });
 
+    console.log("[DEĞERLENDİR] Değerlendirme sonrası geçmiş çekiliyor:", userId);
     gecmisiniCek(userId);
 
   } catch (hata) {
@@ -288,27 +291,39 @@ function yuklemeyiBitir() {
 
 async function gecmisiniCek(userId) {
   try {
+    console.log("[GECMİS] Çekme başladı, userId:", userId);
     const yanit = await fetch(`/api/gecmis/${userId}`);
     const rows  = await yanit.json();
+    console.log("[GECMİS] Gelen satır sayısı:", rows.length, rows);
+
     const gecmis = rows.map(function (r) {
+      // SQLite "YYYY-MM-DD HH:MM:SS" formatını ISO'ya çevirip parse ediyoruz
+      const tarihStr = r.created_at ? r.created_at.replace(" ", "T") : null;
+
+      let gucluYonler = [];
+      try { gucluYonler = r.boss_gucluYonler ? JSON.parse(r.boss_gucluYonler) : []; }
+      catch (_) {}
+
       return {
         id:                   r.id,
         fikir:                r.fikir,
-        tarih:                new Date(r.created_at).toLocaleString("tr-TR"),
-        userValue:            r.userValue,
-        businessStrategy:     r.businessStrategy,
-        technicalFeasibility: r.technicalFeasibility,
+        tarih:                tarihStr ? new Date(tarihStr).toLocaleString("tr-TR") : "—",
+        userValue:            r.userValue            || "",
+        businessStrategy:     r.businessStrategy     || "",
+        technicalFeasibility: r.technicalFeasibility || "",
         boss: {
-          karar:      r.boss_karar,
-          skor:       r.boss_skor,
-          aciklama:   r.boss_aciklama,
-          gucluYonler: JSON.parse(r.boss_gucluYonler)
+          karar:       r.boss_karar    || "",
+          skor:        r.boss_skor     || "—",
+          aciklama:    r.boss_aciklama || "",
+          gucluYonler: gucluYonler
         }
       };
     });
+
+    console.log("[GECMİS] Map tamamlandı, gecmisiGoster çağrılıyor, kayıt:", gecmis.length);
     gecmisiGoster(gecmis);
   } catch (hata) {
-    console.error("Geçmiş yüklenemedi:", hata.message);
+    console.error("[GECMİS] HATA:", hata.message, hata.stack);
   }
 }
 
@@ -477,6 +492,159 @@ function ornekFikirGetir() {
 
 
 // ===========================
+// AGENT DEBATE
+// ===========================
+
+async function debateBaslat() {
+  const fikir = document.getElementById("fikir-alani").value.trim();
+
+  if (!fikir) {
+    document.getElementById("bos-uyari").classList.remove("gizli");
+    return;
+  }
+  document.getElementById("bos-uyari").classList.add("gizli");
+  document.getElementById("hata-kutusu").classList.add("gizli");
+  document.getElementById("debate-alani").classList.add("gizli");
+
+  const btn     = document.getElementById("debate-btn");
+  const yazı    = document.getElementById("debate-btn-yazi");
+  const yukleniyor = document.getElementById("debate-btn-loading");
+  btn.disabled = true;
+  yazı.classList.add("gizli");
+  yukleniyor.classList.remove("gizli");
+
+  try {
+    const userId = JSON.parse(localStorage.getItem("kullanici")).id;
+    const yanit = await fetch("/api/debate", {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify({ fikir, userId })
+    });
+
+    const veri = await yanit.json();
+
+    if (veri.hata) {
+      const hataKutusu = document.getElementById("hata-kutusu");
+      hataKutusu.textContent = "❌ " + veri.hata;
+      hataKutusu.classList.remove("gizli");
+      return;
+    }
+
+    debateSonucGoster(veri);
+
+  } catch (hata) {
+    const hataKutusu = document.getElementById("hata-kutusu");
+    hataKutusu.textContent = "❌ Sunucuya bağlanılamadı.";
+    hataKutusu.classList.remove("gizli");
+  } finally {
+    btn.disabled = false;
+    yazı.classList.remove("gizli");
+    yukleniyor.classList.add("gizli");
+  }
+}
+
+function debateSonucGoster(veri) {
+  const turlarAlani = document.getElementById("debate-turlar");
+  turlarAlani.innerHTML = "";
+
+  const turAltyazilari = {
+    1: "Her agent fikri bağımsız olarak değerlendiriyor.",
+    2: "Agentlar birbirlerinin görüşlerine doğrudan itiraz ediyor.",
+    3: "Çatışma yetersizdi — tartışma derinleştirildi.",
+  };
+  const turBadgeleri = {
+    1: '<span class="debate-tur-badge tur1-badge">Tur 1</span>',
+    2: '<span class="debate-tur-badge tur2-badge">Tur 2 — Tartışma</span>',
+    3: '<span class="debate-tur-badge tur3-badge">Tur 3 — Adaptif</span>',
+  };
+
+  veri.turlar.forEach(function (tur) {
+    const bolumEl = document.createElement("div");
+    bolumEl.className = "bolum";
+
+    const adaptifBadge = tur.tur === 3
+      ? ' <span class="adaptif-badge">⚡ Adaptif</span>'
+      : "";
+
+    bolumEl.innerHTML = `
+      <div class="bolum-etiket">AGENT DEBATE — TUR ${tur.tur}${adaptifBadge}</div>
+      <div class="bolum-altyazi">${turAltyazilari[tur.tur] || ""}</div>
+      <div class="ajan-listesi" id="debate-tur${tur.tur}"></div>
+    `;
+    turlarAlani.appendChild(bolumEl);
+
+    const konteyner = document.getElementById("debate-tur" + tur.tur);
+    tur.mesajlar.forEach(function (m) {
+      const kart = document.createElement("div");
+      kart.className = "debate-mesaj-kart " + m.renk + (tur.tur >= 2 ? " tur2" : "");
+
+      kart.innerHTML = `
+        <div class="debate-agent-baslik">
+          <span>${m.ikon}</span>
+          <span>${m.agent}</span>
+          ${turBadgeleri[tur.tur] || ""}
+        </div>
+        <p class="debate-mesaj-metin">${m.mesaj}</p>
+      `;
+      konteyner.appendChild(kart);
+    });
+  });
+
+  // Boss AI sonucunu doldur
+  const boss = veri.boss;
+  document.getElementById("debate-boss-skor").textContent     = boss.score;
+  document.getElementById("debate-boss-aciklama").textContent = boss.summary;
+
+  const kararEl = document.getElementById("debate-boss-karar");
+  kararEl.textContent = "⭐ ÖNERİ: " + boss.decision;
+  kararEl.className = "boss-karar-etiketi";
+  if (boss.decision.includes("PIVOT"))         kararEl.classList.add("karar-pivot");
+  else if (boss.decision.includes("DEVAM ET")) kararEl.classList.add("karar-devam");
+  else if (boss.decision.includes("VAZGEÇ"))   kararEl.classList.add("karar-vazgec");
+  else                                          kararEl.classList.add("karar-devam");
+
+  // En kritik hata
+  const hataAlani = document.getElementById("debate-boss-hata-alani");
+  if (boss.criticalMistake) {
+    document.getElementById("debate-boss-hata").textContent = boss.criticalMistake;
+    hataAlani.classList.remove("gizli");
+  } else {
+    hataAlani.classList.add("gizli");
+  }
+
+  // Tartışmayı kazanan agent
+  const kazananAlani = document.getElementById("debate-boss-kazanan-alani");
+  if (boss.winningAgent) {
+    const kazananHarita = { user: "👤 Kullanıcı Değeri", business: "📈 İş Stratejisi", technical: "⚙️ Teknik" };
+    document.getElementById("debate-boss-kazanan").textContent = kazananHarita[boss.winningAgent] || boss.winningAgent;
+    kazananAlani.classList.remove("gizli");
+  } else {
+    kazananAlani.classList.add("gizli");
+  }
+
+  const gucluListe = document.getElementById("debate-boss-guclu");
+  gucluListe.innerHTML = "";
+  (boss.strongPoints || []).forEach(function (madde) {
+    const li = document.createElement("li");
+    li.textContent = madde;
+    gucluListe.appendChild(li);
+  });
+
+  const riskListe = document.getElementById("debate-boss-riskler");
+  riskListe.innerHTML = "";
+  (boss.risks || []).forEach(function (risk) {
+    const li = document.createElement("li");
+    li.textContent = risk;
+    riskListe.appendChild(li);
+  });
+
+  const alan = document.getElementById("debate-alani");
+  alan.classList.remove("gizli");
+  alan.scrollIntoView({ behavior: "smooth" });
+}
+
+
+// ===========================
 // FİKİR KOÇU
 // ===========================
 
@@ -495,10 +663,11 @@ async function fikirKocuBaslat() {
   btn.textContent = "⏳ Sorular hazırlanıyor...";
 
   try {
+    const userId = JSON.parse(localStorage.getItem("kullanici")).id;
     const yanit = await fetch("/api/idea-coach", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mod: "sorular", fikir })
+      body: JSON.stringify({ mod: "sorular", fikir, userId })
     });
     const veri = await yanit.json();
     if (veri.hata) throw new Error(veri.hata);
@@ -548,10 +717,11 @@ async function fikriGelistir() {
   yukleniyor.classList.remove("gizli");
 
   try {
+    const userId = JSON.parse(localStorage.getItem("kullanici")).id;
     const yanit = await fetch("/api/idea-coach", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mod: "gelistir", fikir, cevaplar })
+      body: JSON.stringify({ mod: "gelistir", fikir, cevaplar, userId })
     });
     const veri = await yanit.json();
     if (veri.hata) throw new Error(veri.hata);
@@ -853,18 +1023,39 @@ function gecmisiToggle() {
 }
 
 function gecmisiGoster(gecmis) {
-  const alan  = document.getElementById("gecmis-alani");
-  const liste = document.getElementById("gecmis-liste");
+  console.log("[RENDER] gecmisiGoster çağrıldı, kayıt sayısı:", gecmis.length);
 
-  if (!alan) return;
+  const alan   = document.getElementById("gecmis-alani");
+  const icerik = document.getElementById("gecmis-icerik");
+  const ok     = document.getElementById("gecmis-ok");
+  const liste  = document.getElementById("gecmis-liste");
 
-  if (gecmis.length === 0) { alan.classList.add("gizli"); return; }
+  console.log("[RENDER] Elementler:", {
+    alan:   alan   ? "BULUNDU" : "YOK",
+    icerik: icerik ? "BULUNDU" : "YOK",
+    ok:     ok     ? "BULUNDU" : "YOK",
+    liste:  liste  ? "BULUNDU" : "YOK"
+  });
 
+  if (!alan) { console.error("[RENDER] gecmis-alani elementi bulunamadı!"); return; }
+  if (!icerik) { console.error("[RENDER] gecmis-icerik elementi bulunamadı!"); return; }
+  if (!liste) { console.error("[RENDER] gecmis-liste elementi bulunamadı!"); return; }
+
+  if (gecmis.length === 0) {
+    console.log("[RENDER] Kayıt yok, alan gizleniyor.");
+    alan.classList.add("gizli");
+    return;
+  }
+
+  // Accordion'ı göster ve içeriği aç
   alan.classList.remove("gizli");
+  icerik.classList.remove("gizli");
+  if (ok) ok.classList.add("acik");
   liste.innerHTML = "";
 
-  // Max 10 item göster
-  gecmis.slice(0, 10).forEach(function (kayit) {
+  console.log("[RENDER] Accordion açıldı. Kartlar oluşturuluyor...");
+
+  gecmis.slice(0, 10).forEach(function (kayit, i) {
     const kart = document.createElement("div");
     kart.className = "gecmis-kart";
     kart.innerHTML = `
@@ -900,5 +1091,8 @@ function gecmisiGoster(gecmis) {
     };
 
     liste.appendChild(kart);
+    if (i === 0) console.log("[RENDER] İlk kart eklendi, innerHTML uzunluğu:", kart.innerHTML.length);
   });
+
+  console.log("[RENDER] Tüm kartlar eklendi. Liste çocuk sayısı:", liste.children.length);
 }
