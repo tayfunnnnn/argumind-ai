@@ -1,82 +1,72 @@
-# 🤖 AI Idea Evaluator
+# 🚀 ArguMind AI
 
-AI Idea Evaluator, kullanıcıların iş veya girişim fikirlerini yapay zekâ (AI) destekli analiz ederek değerlendirmesini sağlayan bir web uygulamasıdır.
+![App Screenshot](./screenshot.png)
 
-Uygulama; girilen fikri farklı AI agent’lar (uzman roller) ile analiz eder, sonuçları birleştirir ve uygulanabilir bir aksiyon planı (task listesi) üretir.
-
----
-
-## 🚀 Canlı Demo
-
-👉 https://ai-idea-evaluator-r1sq.onrender.com/
-
-📌 Not: İlk açılışta (Render free plan) 30–50 saniye gecikme olabilir.
+🔗 **Live Demo:**  
+👉 https://argumind-ai.onrender.com
 
 ---
 
-## 📸 Uygulama Önizleme
+## 🧠 Proje Amacı
 
-![App Preview](./screenshot.png)
+**ArguMind AI**, kullanıcıların iş ve ürün fikirlerini çoklu yapay zeka agent’larının tartışması (multi-agent debate) ile analiz eden bir karar destek sistemidir.
 
----
+Geleneksel AI sistemleri:
+- Tek cevap üretir  
+- Yüzeysel analiz yapar  
+- Fazla “uyumlu” davranır  
 
-## 🧩 Problem & Çözüm
-
-**Problem:**  
-Bir iş fikrinin iyi olup olmadığını anlamak zor. Genelde:
-- farklı açılardan değerlendirilmez
-- objektif analiz yapılmaz
-- aksiyona dönüştürülmez
-
-**Çözüm:**  
-AI Idea Evaluator:
-- fikri farklı perspektiflerden analiz eder  
-- tek bir karar üretir  
-- direkt uygulanabilir görev listesine çevirir  
+**ArguMind AI yaklaşımı:**
+- Multi-agent system (çoklu AI agent)
+- Adversarial debate (çatışmalı tartışma)
+- Role-based reasoning (rol bazlı analiz)
+- Decision engine (net karar üretimi)
 
 ---
 
-## ⚙️ Temel Özellikler
+## ⚙️ Nasıl Çalışır?
 
-- 🔐 Kullanıcı kayıt & giriş sistemi (authentication – kimlik doğrulama)
-- 🤖 AI destekli fikir analizi
-- 🧠 Çoklu AI agent mimarisi:
-  - Kullanıcı Değeri Analizi
-  - İş / Strateji Analizi
-  - Teknik Uygulanabilirlik Analizi
-- 👨‍💼 Boss AI ile nihai karar & puanlama
-- ❓ Soru bazlı fikir geliştirme akışı
-- 📋 Otomatik task listesi üretimi
-- 🗂️ Sprint Board (kanban) ile görev takibi
-- 🕘 Kullanıcıya özel analiz geçmişi
+### 1. Kullanıcı fikrini girer
+
+> “AI destekli restoran otomasyon sistemi”
 
 ---
 
-## 🧱 Kullanılan Teknolojiler
+### 2. 3 farklı AI agent analiz yapar
 
-- Frontend: HTML, CSS, JavaScript
-- Backend: Node.js (runtime), Express.js (framework)
-- Veritabanı: SQLite
-- Authentication: bcrypt (şifre güvenliği)
-- AI: OpenAI API
-
----
-
-## 🔄 Uygulama Akışı
-
-1. Kullanıcı fikir girer  
-2. AI agent’lar farklı açılardan analiz eder  
-3. Boss AI sonuçları değerlendirir  
-4. Nihai karar & skor oluşturulur  
-5. Sistem task listesi üretir  
-6. Kullanıcı Sprint Board üzerinden ilerler  
+| Agent | Odak |
+|------|------|
+| 👤 Kullanıcı | Davranış, güven, adoption |
+| 📈 İş | Pazar, gelir, rekabet |
+| ⚙️ Teknik | Feasibility, maliyet, sistem |
 
 ---
 
-## 🛠️ Kurulum (Local)
+### 3. Debate başlar
 
-```bash
-git clone https://github.com/tayfunnnnn/ai-idea-evaluator.git
-cd ai-idea-evaluator
-npm install
-npm start
+- Agent’lar birbirine itiraz eder  
+- Argümanlar çürütülür  
+- Yeni riskler ortaya çıkar  
+
+---
+
+### 4. Boss AI karar verir
+
+- ✅ DEVAM ET  
+- 🔄 PIVOT  
+- ❌ VAZGEÇ  
+
+---
+
+### 5. Çıktı
+
+```json
+{
+  "score": 3.5,
+  "decision": "VAZGEÇ",
+  "summary": "...",
+  "strongPoints": ["..."],
+  "risks": ["..."],
+  "winningAgent": "user",
+  "criticalMistake": "..."
+}
